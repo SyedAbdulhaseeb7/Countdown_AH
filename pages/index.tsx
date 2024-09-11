@@ -1,115 +1,104 @@
-import Image from "next/image";
-import localFont from "next/font/local";
+import { useState, useEffect, useRef, ChangeEvent } from "react";
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
+export default function home() {
+  const [duration, setDuration] = useState<number>(0); // Input duration in seconds
+  const [timeLeft, setTimeLeft] = useState<number>(0); // Remaining time in seconds
+  const [isActive, setIsActive] = useState<boolean>(false); // Timer active status
+  const timerRef = useRef<NodeJS.Timeout | null>(null); // Reference to the timer interval
 
-export default function Home() {
+  // Handle input change for the duration
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setDuration(Number(e.target.value));
+  };
+
+  // Set the duration for the countdown timer
+  const handleSetDuration = () => {
+    setTimeLeft(duration);
+    setIsActive(false);
+    if (timerRef.current) clearInterval(timerRef.current);
+  };
+
+  // Start the countdown timer
+  const handleStart = () => {
+    if (timeLeft > 0 && !isActive) {
+      setIsActive(true);
+    }
+  };
+
+  // Pause the countdown timer
+  const handlePause = () => {
+    setIsActive(false);
+    if (timerRef.current) clearInterval(timerRef.current);
+  };
+
+  // Reset the countdown timer
+  const handleReset = () => {
+    setIsActive(false);
+    if (timerRef.current) clearInterval(timerRef.current);
+    setTimeLeft(0);
+    setDuration(0);
+  };
+
+  // Format the time (minutes:seconds)
+  const formatTime = (time: number) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = time % 60;
+    return `${minutes.toString().padStart(2, "0")}:${seconds
+      .toString()
+      .padStart(2, "0")}`;
+  };
+
+  // Countdown effect when timer is active
+  useEffect(() => {
+    if (isActive && timeLeft > 0) {
+      timerRef.current = setInterval(() => {
+        setTimeLeft((prevTime) => prevTime - 1);
+      }, 1000);
+    } else if (timeLeft === 0 && timerRef.current) {
+      clearInterval(timerRef.current);
+      setIsActive(false);
+    }
+
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [isActive, timeLeft]);
+
   return (
-    <div
-      className={`${geistSans.variable} ${geistMono.variable} grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]`}
-    >
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              pages/index.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <div className="countdown-container">
+      <div className="countdown">
+      <h1 className="countdown-title">Countdown Timer</h1>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+      {/* Input Field */}
+      <input
+        type="number"
+        value={duration}
+        onChange={handleInputChange}
+        placeholder="Enter duration (seconds)"
+        className="countdown-input"
+      />
+
+      {/* Buttons */}
+      <div className="countdown-buttons">
+        <button onClick={handleSetDuration} className="btn">
+          Set Duration
+        </button>
+        <button onClick={handleStart} className="btn" disabled={isActive || timeLeft <= 0}>
+          Start
+        </button>
+        <button onClick={handlePause} className="btn" disabled={!isActive}>
+          Pause
+        </button>
+        <button onClick={handleReset} className="btn">
+          Reset
+        </button>
+      </div>
+      <div className="countdown-display">
+        <h2>{formatTime(timeLeft)}</h2>
+      </div>
+</div>
+      </div>
+      )
+
+    
 }

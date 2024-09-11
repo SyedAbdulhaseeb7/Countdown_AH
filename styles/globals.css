@@ -2,26 +2,137 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+
+.countdown {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  background-color: #dcdcdc;
+  text-align: center;
+
+  width: 33%;
+  justify-content: center;
+}
+/* Overall container with a gradient background and centering */
+.countdown-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(120deg, #970b10, #754132);
+  background-size: 200% 200%;
+  animation: gradientFlow 20s ease infinite;
+  padding: 20px;
+  font-family: 'Poppins', sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* Gradient animation for dynamic background */
+@keyframes gradientFlow {
+  0% {
+    background: linear-gradient(120deg, #970b10, #754132);
+  }
+  50% {
+    background: linear-gradient(120deg, #97950b, #367532);
+  }
+  100% {
+    background: linear-gradient(120deg, #430b97, #753267);
   }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+/* Countdown container styling */
+.countdown {
+  text-align: center;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+/* Title styling */
+.countdown-title {
+  font-size: 2.5rem;
+  color: #333;
+  margin-bottom: 20px;
+  font-weight: 600;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Input field styling */
+.countdown-input {
+  font-size: 1.25rem;
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  color: #333;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.countdown-input:focus {
+  border-color: #ff9a9e;
+  outline: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Button container styling */
+.countdown-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+/* Button styling */
+.btn {
+  font-size: 1rem;
+  padding: 10px 20px;
+  background-color: #ff9a9e;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn:hover {
+  background-color: #f76c6c;
+}
+
+.btn:active {
+  background-color: #e63946;
+  transform: scale(0.98);
+}
+
+.btn::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 300%;
+  height: 300%;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 0.5s ease;
+}
+
+.btn:hover::before {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* Timer display styling */
+.countdown-display {
+  margin-top: 20px;
+}
+
+.countdown-display h2 {
+  font-size: 2rem;
+  color: #333;
+  background: rgba(255, 255, 255, 0.7);
+  padding: 15px 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
